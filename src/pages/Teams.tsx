@@ -13,13 +13,13 @@ import { useToast } from '@/hooks/use-toast';
 interface Team {
   id: string;
   name: string;
-  admin_id: string;
-  points: number;
-  created_at: string;
-  updated_at: string;
+  admin_id: string | null;
+  points: number | null;
+  created_at: string | null;
+  updated_at: string | null;
   admin_profile?: {
     name: string;
-  };
+  } | null;
   member_count?: number;
 }
 
@@ -183,7 +183,7 @@ const Teams = () => {
               </div>
               <Badge variant="default" className="text-lg px-3 py-1">
                 <Trophy className="w-4 h-4 mr-2" />
-                {userTeam.points} points
+                {userTeam.points || 0} points
               </Badge>
             </div>
           </CardContent>
@@ -246,7 +246,7 @@ const Teams = () => {
                 </div>
                 <Badge variant="secondary">
                   <Trophy className="w-3 h-3 mr-1" />
-                  {team.points}
+                  {team.points || 0}
                 </Badge>
               </div>
             </CardHeader>

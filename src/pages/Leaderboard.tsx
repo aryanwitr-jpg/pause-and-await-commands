@@ -57,7 +57,7 @@ const Leaderboard = () => {
           return {
             id: team.id,
             name: team.name,
-            points: team.points,
+            points: team.points || 0,
             member_count: count || 0,
             rank: index + 1,
             admin_name: 'Admin'

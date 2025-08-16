@@ -7,6 +7,7 @@ import { EventFilters } from '@/components/events/EventFilters';
 import { BookingDialog } from '@/components/events/BookingDialog';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Event {
@@ -231,8 +232,8 @@ const Events = () => {
                      event.available_seats === 0 ? "Event Full" : "Book Event"}
                   </Button>
                 ) : (
-                  <Button asChild className="w-full">
-                    <a href="/auth">Sign in to Book</a>
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to="/auth">Sign in to Book</Link>
                   </Button>
                 )}
               </CardFooter>
