@@ -9,8 +9,8 @@ const Index = () => {
   return (
     <main className="min-h-[calc(100vh-4rem)]">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-background to-muted/20 bg-cover bg-center bg-no-repeat" style={{backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url('/lovable-uploads/df77be1d-35f3-40f0-a372-d8e20a60e87d.png')"}}>
-        <div className="absolute inset-0 bg-background/75"></div>
+      <section className="relative py-20 px-4 bg-cover bg-center bg-no-repeat" style={{backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/lovable-uploads/df77be1d-35f3-40f0-a372-d8e20a60e87d.png')"}}>
+        <div className="absolute inset-0 bg-background/40"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             ImpactBoard
