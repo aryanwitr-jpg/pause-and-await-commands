@@ -74,10 +74,10 @@ export const Navbar: React.FC = () => {
         {role === 'coach' && (
           <>
             <Link
-              to="/coach/events"
+              to="/events"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              My Events
+              Events
             </Link>
             <Link
               to="/coach/dashboard"
@@ -91,11 +91,11 @@ export const Navbar: React.FC = () => {
         {role === 'admin' && (
           <>
             <Link
-              to="/admin/users"
+              to="/events"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              <Users className="w-4 h-4 inline mr-2" />
-              Users
+              <Calendar className="w-4 h-4 inline mr-2" />
+              Events
             </Link>
             <Link
               to="/admin/dashboard"

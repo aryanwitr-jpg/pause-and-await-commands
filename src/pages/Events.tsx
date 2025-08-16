@@ -53,7 +53,9 @@ const Events = () => {
 
   const fetchEvents = async () => {
     try {
-      // Use dummy data for demo
+      // Use dummy data for demo - commenting out Supabase call
+      // const { data, error } = await supabase...
+      
       const eventsData = dummyEvents.map(event => ({
         ...event,
         coach_profile: { name: dummyCoaches.find(c => c.id === event.coach_id)?.name || 'Unknown' },
@@ -180,39 +182,47 @@ const Events = () => {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="h-full flex flex-col">
+            <Card key={event.id} className="h-full flex flex-col hover:shadow-lg transition-shadow border-l-4 border-l-primary/30">
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl">{event.title}</CardTitle>
-                  <Badge variant={event.available_seats > 0 ? "default" : "secondary"}>
+                  <CardTitle className="text-xl flex items-center space-x-2">
+                    <Leaf className="w-5 h-5 text-primary" />
+                    <span>{event.title}</span>
+                  </CardTitle>
+                  <Badge variant={event.available_seats > 0 ? "default" : "secondary"} className="shrink-0">
                     {event.available_seats > 0 ? "Available" : "Full"}
                   </Badge>
                 </div>
-                <CardDescription>{event.description}</CardDescription>
+                <CardDescription className="text-base">{event.description}</CardDescription>
               </CardHeader>
               
               <CardContent className="flex-1">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {new Date(event.event_date).toLocaleDateString()}
+                    <Calendar className="w-4 h-4 mr-2 text-primary" />
+                    {new Date(event.event_date).toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4 mr-2" />
+                    <MapPin className="w-4 h-4 mr-2 text-primary" />
                     {event.location}
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <Users className="w-4 h-4 mr-2" />
+                    <Users className="w-4 h-4 mr-2 text-primary" />
                     {event.available_seats} / {event.total_seats} seats available
                   </div>
                   {event.category && (
-                    <Badge variant="outline" className="w-fit">
+                    <Badge variant="outline" className="w-fit bg-accent/30">
                       {event.category}
                     </Badge>
                   )}
                   {event.coach_profile && (
-                    <p className="text-sm text-muted-foreground">
-                      Coach: {event.coach_profile.name}
+                    <p className="text-sm text-muted-foreground font-medium">
+                      🌱 Coach: {event.coach_profile.name}
                     </p>
                   )}
                 </div>
