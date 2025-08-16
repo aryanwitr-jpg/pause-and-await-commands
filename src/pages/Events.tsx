@@ -12,6 +12,15 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { dummyEvents, dummyCoaches } from '@/data/dummyData';
 
+// Import event images
+import solarGarden from '@/assets/solar-garden.jpg';
+import zeroWaste from '@/assets/zero-waste.jpg';
+import urbanBeekeeping from '@/assets/urban-beekeeping.jpg';
+import sustainableTransport from '@/assets/sustainable-transport.jpg';
+import oceanCleanup from '@/assets/ocean-cleanup.jpg';
+import greenBuilding from '@/assets/green-building.jpg';
+import permacultureGarden from '@/assets/permaculture-garden.jpg';
+
 interface Event {
   id: string;
   title: string;
@@ -56,11 +65,20 @@ const Events = () => {
 
   const fetchEvents = async () => {
     try {
-      // Use dummy data for demo - commenting out Supabase call
-      // const { data, error } = await supabase...
-      
+      // Image mapping for events
+      const imageMap: { [key: string]: string } = {
+        'event-1': solarGarden,
+        'event-2': zeroWaste,
+        'event-3': urbanBeekeeping,
+        'event-4': sustainableTransport,
+        'event-5': oceanCleanup,
+        'event-6': greenBuilding,
+        'event-7': permacultureGarden,
+      };
+
       const eventsData = dummyEvents.map(event => ({
         ...event,
+        image_url: imageMap[event.id] || solarGarden,
         coach_profile: { name: dummyCoaches.find(c => c.id === event.coach_id)?.name || 'Unknown' },
         bookings: [] // Empty for demo
       }));
@@ -192,20 +210,29 @@ const Events = () => {
           {filteredEvents.map((event) => (
             <Card 
               key={event.id} 
-              className="h-full flex flex-col hover:shadow-lg transition-shadow border-l-4 border-l-primary/30 cursor-pointer"
+              className="h-full flex flex-col hover:shadow-lg transition-shadow border-l-4 border-l-primary/30 cursor-pointer overflow-hidden"
               onClick={() => handleEventClick(event)}
             >
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl flex items-center space-x-2">
-                    <Leaf className="w-5 h-5 text-primary" />
-                    <span>{event.title}</span>
-                  </CardTitle>
+              {/* Event Image */}
+              <div className="relative w-full h-48 overflow-hidden">
+                <img 
+                  src={event.image_url} 
+                  alt={event.title}
+                  className="w-full h-full object-cover transition-transform hover:scale-105"
+                />
+                <div className="absolute top-3 right-3">
                   <Badge variant={event.available_seats > 0 ? "default" : "secondary"} className="shrink-0">
                     {event.available_seats > 0 ? "Available" : "Full"}
                   </Badge>
                 </div>
-                <CardDescription className="text-base">{event.description}</CardDescription>
+              </div>
+
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl flex items-center space-x-2">
+                  <Leaf className="w-5 h-5 text-primary" />
+                  <span>{event.title}</span>
+                </CardTitle>
+                <CardDescription className="text-base line-clamp-2">{event.description}</CardDescription>
               </CardHeader>
               
               <CardContent className="flex-1">
