@@ -14,6 +14,7 @@ import Teams from "./pages/Teams";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
 import CoachDashboard from "./pages/CoachDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,11 +31,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/events" element={
-                <ProtectedRoute>
-                  <Events />
-                </ProtectedRoute>
-              } />
+              <Route path="/events" element={<Events />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute requiredRole="user">
                   <Dashboard />
@@ -43,6 +40,11 @@ const App = () => (
               <Route path="/coach/dashboard" element={
                 <ProtectedRoute requiredRole="coach">
                   <CoachDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/dashboard" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/teams" element={

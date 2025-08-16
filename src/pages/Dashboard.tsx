@@ -13,11 +13,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 
 interface Habit {
   id: string;
-  name: string;
-  description: string;
-  target_frequency: number;
+  user_id: string;
+  habit_name: string;
+  habit_date: string;
+  status: 'pending' | 'completed' | 'missed';
+  points: number;
   created_at: string;
-  progress_entries?: Array<{ date: string }>;
 }
 
 interface DashboardStats {
@@ -51,14 +52,9 @@ const Dashboard = () => {
     if (!user) return;
 
     try {
-      const today = new Date().toISOString().split('T')[0];
-      
       const { data, error } = await supabase
         .from('habits')
-        .select(`
-          *,
-          progress_entries:habit_progress(date)
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -67,9 +63,10 @@ const Dashboard = () => {
       setHabits(data || []);
       
       // Calculate stats
+      const today = new Date().toISOString().split('T')[0];
       const totalHabits = data?.length || 0;
       const completedToday = data?.filter(habit => 
-        habit.progress_entries?.some(entry => entry.date === today)
+        habit.habit_date === today && habit.status === 'completed'
       ).length || 0;
       
       setStats({
@@ -94,13 +91,15 @@ const Dashboard = () => {
     if (!user || !newHabit.name.trim()) return;
 
     try {
+      const today = new Date().toISOString().split('T')[0];
+      
       const { error } = await supabase
         .from('habits')
         .insert([{
           user_id: user.id,
-          name: newHabit.name,
-          description: newHabit.description,
-          target_frequency: newHabit.target_frequency
+          habit_name: newHabit.name,
+          habit_date: today,
+          status: 'pending'
         }]);
 
       if (error) throw error;
@@ -126,16 +125,15 @@ const Dashboard = () => {
   const markHabitComplete = async (habitId: string) => {
     if (!user) return;
 
-    const today = new Date().toISOString().split('T')[0];
-
     try {
       const { error } = await supabase
-        .from('habit_progress')
-        .insert([{
-          habit_id: habitId,
-          user_id: user.id,
-          date: today
-        }]);
+        .from('habits')
+        .update({ 
+          status: 'completed',
+          habit_date: new Date().toISOString().split('T')[0]
+        })
+        .eq('id', habitId)
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
@@ -157,22 +155,12 @@ const Dashboard = () => {
 
   const isHabitCompletedToday = (habit: Habit) => {
     const today = new Date().toISOString().split('T')[0];
-    return habit.progress_entries?.some(entry => entry.date === today);
+    return habit.habit_date === today && habit.status === 'completed';
   };
 
   const getHabitProgress = (habit: Habit) => {
-    const thisWeek = [];
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      thisWeek.push(date.toISOString().split('T')[0]);
-    }
-    
-    const completedThisWeek = thisWeek.filter(date => 
-      habit.progress_entries?.some(entry => entry.date === date)
-    ).length;
-    
-    return Math.round((completedThisWeek / habit.target_frequency) * 100);
+    // For now, just return 0-100 based on completion status
+    return habit.status === 'completed' ? 100 : 0;
   };
 
   if (loading) {
@@ -273,17 +261,6 @@ const Dashboard = () => {
                   placeholder="Why is this habit important to you?"
                 />
               </div>
-              <div>
-                <Label htmlFor="habit-frequency">Target per week</Label>
-                <Input
-                  id="habit-frequency"
-                  type="number"
-                  min="1"
-                  max="7"
-                  value={newHabit.target_frequency}
-                  onChange={(e) => setNewHabit(prev => ({ ...prev, target_frequency: parseInt(e.target.value) || 1 }))}
-                />
-              </div>
               <Button onClick={createHabit} className="w-full">
                 Create Habit
               </Button>
@@ -317,10 +294,8 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg">{habit.name}</CardTitle>
-                    {habit.description && (
-                      <CardDescription>{habit.description}</CardDescription>
-                    )}
+                    <CardTitle className="text-lg">{habit.habit_name}</CardTitle>
+                    <CardDescription>Created: {new Date(habit.created_at).toLocaleDateString()}</CardDescription>
                   </div>
                   <Badge variant={isHabitCompletedToday(habit) ? "default" : "secondary"}>
                     {isHabitCompletedToday(habit) ? "Complete" : "Pending"}
@@ -332,15 +307,15 @@ const Dashboard = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span>Weekly Progress</span>
-                      <span>{getHabitProgress(habit)}%</span>
+                      <span>Status</span>
+                      <span className="capitalize">{habit.status}</span>
                     </div>
                     <Progress value={getHabitProgress(habit)} className="h-2" />
                   </div>
                   
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">
-                      Target: {habit.target_frequency}x per week
+                      Date: {new Date(habit.habit_date).toLocaleDateString()}
                     </span>
                     <Button
                       onClick={() => markHabitComplete(habit.id)}
