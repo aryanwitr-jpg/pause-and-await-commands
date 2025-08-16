@@ -5,10 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { EventFilters } from '@/components/events/EventFilters';
 import { BookingDialog } from '@/components/events/BookingDialog';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Leaf } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { dummyEvents, dummyCoaches } from '@/data/dummyData';
 
 interface Event {
   id: string;
@@ -52,25 +53,18 @@ const Events = () => {
 
   const fetchEvents = async () => {
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select(`
-          *,
-          coach_profile:profiles!events_coach_id_fkey(name),
-          bookings(user_id)
-        `)
-        .eq('status', 'active')
-        .gte('event_date', new Date().toISOString().split('T')[0])
-        .order('event_date', { ascending: true });
-
-      if (error) throw error;
+      // Use dummy data for demo
+      const eventsData = dummyEvents.map(event => ({
+        ...event,
+        coach_profile: { name: dummyCoaches.find(c => c.id === event.coach_id)?.name || 'Unknown' },
+        bookings: [] // Empty for demo
+      }));
       
-      const eventsData = data || [];
       setEvents(eventsData);
       setFilteredEvents(eventsData);
       
       // Extract unique coaches, categories, and locations for filters
-      const uniqueCoaches = [...new Map(eventsData.map(e => [e.coach_id, { id: e.coach_id, name: e.coach_profile?.name || 'Unknown' }])).values()];
+      const uniqueCoaches = dummyCoaches.map(coach => ({ id: coach.id, name: coach.name }));
       const uniqueCategories = [...new Set(eventsData.map(e => e.category).filter(Boolean))];
       const uniqueLocations = [...new Set(eventsData.map(e => e.location).filter(Boolean))];
       
@@ -161,8 +155,11 @@ const Events = () => {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">Upcoming Events</h1>
-        <p className="text-xl text-muted-foreground">Join events and connect with your community</p>
+        <div className="flex items-center justify-center space-x-3 mb-4">
+          <Leaf className="w-10 h-10 text-primary" />
+          <h1 className="text-4xl font-bold">Sustainability Events</h1>
+        </div>
+        <p className="text-xl text-muted-foreground">Join eco-friendly events and make a positive impact together</p>
       </div>
 
       <EventFilters

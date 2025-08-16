@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, Check, X, Calendar, Target } from 'lucide-react';
+import { Plus, Check, X, Calendar, Target, Leaf } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { PredefinedHabits } from './PredefinedHabits';
 
 interface Habit {
   id: string;
@@ -60,8 +61,11 @@ export const HabitTracker: React.FC = () => {
     }
   };
 
-  const addHabit = async () => {
-    if (!user || !newHabitName.trim()) return;
+  const addHabit = async (habitName?: string, points?: number) => {
+    if (!user) return;
+    
+    const name = habitName || newHabitName.trim();
+    if (!name) return;
     
     setAddingHabit(true);
     try {
@@ -70,17 +74,17 @@ export const HabitTracker: React.FC = () => {
         .from('habits')
         .insert([{
           user_id: user.id,
-          habit_name: newHabitName.trim(),
+          habit_name: name,
           habit_date: today,
           status: 'pending',
-          points: 10
+          points: points || 10
         }]);
 
       if (error) throw error;
 
       toast({
         title: "Success!",
-        description: "Habit added successfully",
+        description: `Habit "${name}" added successfully`,
       });
 
       setNewHabitName('');
@@ -152,7 +156,7 @@ export const HabitTracker: React.FC = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
+        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
               <Target className="w-5 h-5 text-primary" />
@@ -164,10 +168,10 @@ export const HabitTracker: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="bg-gradient-to-br from-green-500/5 to-green-500/10 border-green-500/20">
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
-              <Check className="w-5 h-5 text-green-500" />
+              <Check className="w-5 h-5 text-green-600" />
               <div>
                 <p className="text-sm font-medium">Completed</p>
                 <p className="text-2xl font-bold">{getCompletedToday()}</p>
@@ -176,12 +180,12 @@ export const HabitTracker: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="bg-gradient-to-br from-yellow-500/5 to-yellow-500/10 border-yellow-500/20">
           <CardContent className="pt-6">
             <div className="flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-yellow-500" />
+              <Leaf className="w-5 h-5 text-yellow-600" />
               <div>
-                <p className="text-sm font-medium">Points Today</p>
+                <p className="text-sm font-medium">Eco Points Today</p>
                 <p className="text-2xl font-bold">{getTotalPointsToday()}</p>
               </div>
             </div>
@@ -189,40 +193,49 @@ export const HabitTracker: React.FC = () => {
         </Card>
       </div>
 
-      {/* Add New Habit */}
+      {/* Predefined Habits Section */}
+      <PredefinedHabits 
+        onAddHabit={addHabit}
+        userHabits={habits.map(h => h.habit_name)}
+      />
+
+      {/* Add Custom Habit */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Daily Habits</CardTitle>
+              <CardTitle className="flex items-center space-x-2">
+                <Leaf className="w-5 h-5 text-primary" />
+                <span>Your Sustainability Habits</span>
+              </CardTitle>
               <CardDescription>
-                Track your daily habits and earn points for your team
+                Track your daily eco-friendly habits and earn points for your team
               </CardDescription>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Habit
+                  Add Custom Habit
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Habit</DialogTitle>
+                  <DialogTitle>Add Custom Habit</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="habit-name">Habit Name</Label>
+                    <Label htmlFor="habit-name">Custom Habit Name</Label>
                     <Input
                       id="habit-name"
-                      placeholder="e.g., Drink 8 glasses of water"
+                      placeholder="e.g., Use bamboo toothbrush"
                       value={newHabitName}
                       onChange={(e) => setNewHabitName(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && addHabit()}
                     />
                   </div>
-                  <Button onClick={addHabit} disabled={addingHabit || !newHabitName.trim()} className="w-full">
-                    {addingHabit ? 'Adding...' : 'Add Habit'}
+                  <Button onClick={() => addHabit()} disabled={addingHabit || !newHabitName.trim()} className="w-full">
+                    {addingHabit ? 'Adding...' : 'Add Custom Habit'}
                   </Button>
                 </div>
               </DialogContent>
@@ -231,13 +244,16 @@ export const HabitTracker: React.FC = () => {
         </CardHeader>
         <CardContent>
           {getTodaysHabits().length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No habits for today. Add your first habit to get started!
-            </p>
+            <div className="text-center py-8">
+              <Leaf className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">
+                No habits for today. Choose from our eco-suggestions above or add your own!
+              </p>
+            </div>
           ) : (
             <div className="space-y-3">
               {getTodaysHabits().map((habit) => (
-                <div key={habit.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={habit.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/30 transition-colors">
                   <div className="flex items-center space-x-3">
                     <div className="flex-1">
                       <p className="font-medium">{habit.habit_name}</p>
@@ -248,10 +264,11 @@ export const HabitTracker: React.FC = () => {
                             habit.status === 'missed' ? 'destructive' : 'secondary'
                           }
                         >
-                          {habit.status}
+                          {habit.status === 'completed' ? '✅ Completed' : 
+                           habit.status === 'missed' ? '❌ Missed' : '⏳ Pending'}
                         </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          {habit.points} points
+                        <span className="text-sm text-muted-foreground font-medium">
+                          🌱 {habit.points} eco-points
                         </span>
                       </div>
                     </div>
@@ -262,16 +279,18 @@ export const HabitTracker: React.FC = () => {
                       <Button
                         size="sm"
                         onClick={() => updateHabitStatus(habit.id, 'completed')}
-                        className="bg-green-500 hover:bg-green-600"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                       >
-                        <Check className="w-4 h-4" />
+                        <Check className="w-4 h-4 mr-1" />
+                        Done
                       </Button>
                       <Button
                         size="sm"
                         variant="destructive"
                         onClick={() => updateHabitStatus(habit.id, 'missed')}
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-4 h-4 mr-1" />
+                        Skip
                       </Button>
                     </div>
                   )}
