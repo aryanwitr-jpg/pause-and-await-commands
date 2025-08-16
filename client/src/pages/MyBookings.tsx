@@ -53,7 +53,7 @@ const MyBookings = () => {
       if (error) throw error;
       
       // Map the data to ensure proper typing
-      const mappedBookings = (data || []).map(booking => ({
+      const mappedBookings = (data || []).map((booking: any) => ({
         ...booking,
         status: booking.status || 'confirmed',
         guest_emails: booking.guest_emails || []
@@ -206,7 +206,7 @@ const MyBookings = () => {
                     )}
                     
                     <div className="border-t pt-4 text-xs text-muted-foreground">
-                      Booked on {new Date(booking.created_at).toLocaleDateString()}
+                      Booked on {booking.created_at ? new Date(booking.created_at).toLocaleDateString() : 'Recently'}
                     </div>
                   </div>
                 </CardContent>
