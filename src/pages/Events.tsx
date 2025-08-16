@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { EventFilters } from '@/components/events/EventFilters';
 import { BookingDialog } from '@/components/events/BookingDialog';
+import { EventDetailDialog } from '@/components/events/EventDetailDialog';
 import { Calendar, MapPin, Users, Clock, Leaf } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -39,6 +40,8 @@ const Events = () => {
   const [locations, setLocations] = useState<string[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [selectedDetailEvent, setSelectedDetailEvent] = useState<Event | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     category: 'all',
@@ -139,6 +142,11 @@ const Events = () => {
     setBookingDialogOpen(true);
   };
 
+  const handleEventClick = (event: Event) => {
+    setSelectedDetailEvent(event);
+    setDetailDialogOpen(true);
+  };
+
   const isUserBooked = (event: Event) => {
     return event.bookings?.some(booking => booking.user_id === user?.id);
   };
@@ -182,7 +190,11 @@ const Events = () => {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="h-full flex flex-col hover:shadow-lg transition-shadow border-l-4 border-l-primary/30">
+            <Card 
+              key={event.id} 
+              className="h-full flex flex-col hover:shadow-lg transition-shadow border-l-4 border-l-primary/30 cursor-pointer"
+              onClick={() => handleEventClick(event)}
+            >
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl flex items-center space-x-2">
@@ -231,7 +243,10 @@ const Events = () => {
               <CardFooter>
                 {user ? (
                   <Button 
-                    onClick={() => handleBookEvent(event)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookEvent(event);
+                    }}
                     disabled={event.available_seats === 0 || isUserBooked(event)}
                     className="w-full"
                   >
@@ -239,7 +254,12 @@ const Events = () => {
                      event.available_seats === 0 ? "Event Full" : "Book Event"}
                   </Button>
                 ) : (
-                  <Button asChild className="w-full" variant="outline">
+                  <Button 
+                    asChild 
+                    className="w-full" 
+                    variant="outline"
+                    onClick={(e: any) => e.stopPropagation()}
+                  >
                     <Link to="/auth">Sign in to Book</Link>
                   </Button>
                 )}
@@ -255,6 +275,14 @@ const Events = () => {
         onOpenChange={setBookingDialogOpen}
         onBookingComplete={fetchEvents}
         userId={user?.id || ''}
+      />
+
+      <EventDetailDialog
+        event={selectedDetailEvent}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onBookEvent={handleBookEvent}
+        user={user}
       />
     </main>
   );

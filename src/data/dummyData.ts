@@ -204,46 +204,117 @@ export const dummyTeams = [
   {
     id: 'team-1',
     name: 'Green Warriors',
-    description: 'Dedicated to reducing carbon footprint through daily actions',
+    description: 'Passionate about environmental conservation and sustainable living',
     member_count: 12,
-    total_points: 2840,
-    admin_email: 'sarah.team@greenwarriors.com',
-    created_at: '2024-01-01'
+    total_points: 847,
+    efficiency: 78,
+    admin_email: 'admin@greenwarriors.com',
+    created_at: '2024-01-15',
+    members: [
+      { name: 'Alex Chen', points: 120, efficiency: 85 },
+      { name: 'Maria Rodriguez', points: 98, efficiency: 72 },
+      { name: 'James Wilson', points: 134, efficiency: 89 },
+      { name: 'Sarah Kumar', points: 87, efficiency: 65 },
+      { name: 'David Park', points: 156, efficiency: 94 }
+    ]
   },
   {
     id: 'team-2',
     name: 'Eco Champions',
-    description: 'Champions of sustainable living and environmental awareness',
+    description: 'Champions of renewable energy and zero waste lifestyle',
     member_count: 18,
-    total_points: 3120,
-    admin_email: 'admin@ecochampions.org',
-    created_at: '2024-01-05'
+    total_points: 1184,
+    efficiency: 82,
+    admin_email: 'lead@ecochampions.org',
+    created_at: '2024-01-20',
+    members: [
+      { name: 'Emma Thompson', points: 167, efficiency: 91 },
+      { name: 'Michael Brown', points: 143, efficiency: 87 },
+      { name: 'Lisa Anderson', points: 128, efficiency: 76 },
+      { name: 'Ryan Martinez', points: 112, efficiency: 69 },
+      { name: 'Jennifer Lee', points: 189, efficiency: 95 }
+    ]
   },
   {
     id: 'team-3',
     name: 'Planet Protectors',
-    description: 'Protecting our planet one sustainable habit at a time',
-    member_count: 9,
-    total_points: 1890,
-    admin_email: 'leader@planetprotectors.net',
-    created_at: '2024-01-10'
+    description: 'Dedicated to protecting our planet for future generations',
+    member_count: 8,
+    total_points: 632,
+    efficiency: 71,
+    admin_email: 'team@planetprotectors.net',
+    created_at: '2024-02-01',
+    members: [
+      { name: 'Sophie Taylor', points: 145, efficiency: 83 },
+      { name: 'Mark Johnson', points: 98, efficiency: 62 },
+      { name: 'Amy Zhang', points: 167, efficiency: 88 },
+      { name: 'Chris Davis', points: 76, efficiency: 54 }
+    ]
   },
   {
     id: 'team-4',
     name: 'Sustainability Squad',
-    description: 'Squad focused on innovative sustainability solutions',
+    description: 'Making sustainability fun and accessible for everyone',
     member_count: 15,
-    total_points: 2650,
+    total_points: 898,
+    efficiency: 75,
     admin_email: 'squad@sustainability.com',
-    created_at: '2024-01-08'
+    created_at: '2024-02-10',
+    members: [
+      { name: 'Jordan Smith', points: 134, efficiency: 79 },
+      { name: 'Taylor Kim', points: 156, efficiency: 86 },
+      { name: 'Casey Miller', points: 98, efficiency: 67 },
+      { name: 'Morgan Wang', points: 123, efficiency: 74 },
+      { name: 'Quinn Garcia', points: 187, efficiency: 92 }
+    ]
   },
   {
     id: 'team-5',
-    name: 'Earth Guardians',
-    description: 'Guardians committed to preserving Earth for future generations',
-    member_count: 21,
-    total_points: 4200,
-    admin_email: 'guardians@earth.org',
-    created_at: '2024-01-03'
+    name: 'Carbon Cutters',
+    description: 'Focused on reducing carbon footprint through daily actions',
+    member_count: 10,
+    total_points: 756,
+    efficiency: 68,
+    admin_email: 'info@carboncutters.org',
+    created_at: '2024-02-15',
+    members: [
+      { name: 'Adrian Lopez', points: 145, efficiency: 81 },
+      { name: 'Zoe Carter', points: 89, efficiency: 58 },
+      { name: 'Noah Wright', points: 134, efficiency: 75 },
+      { name: 'Mia Scott', points: 167, efficiency: 89 },
+      { name: 'Ethan Hill', points: 98, efficiency: 63 }
+    ]
+  },
+  {
+    id: 'team-6',
+    name: 'Renewable Rebels',
+    description: 'Rebels for renewable energy and clean technology',
+    member_count: 14,
+    total_points: 923,
+    efficiency: 79,
+    admin_email: 'rebels@renewable.org',
+    created_at: '2024-01-25',
+    members: [
+      { name: 'Luna Rivera', points: 178, efficiency: 93 },
+      { name: 'Felix Chen', points: 134, efficiency: 76 },
+      { name: 'Iris Patel', points: 145, efficiency: 82 },
+      { name: 'Oscar Kim', points: 98, efficiency: 65 }
+    ]
+  },
+  {
+    id: 'team-7',
+    name: 'Ocean Guardians',
+    description: 'Protecting marine life and reducing ocean pollution',
+    member_count: 11,
+    total_points: 678,
+    efficiency: 73,
+    admin_email: 'guardians@ocean.org',
+    created_at: '2024-02-05',
+    members: [
+      { name: 'Marina Blue', points: 156, efficiency: 87 },
+      { name: 'Reef Johnson', points: 123, efficiency: 71 },
+      { name: 'Coral Davis', points: 134, efficiency: 78 },
+      { name: 'Wave Smith', points: 98, efficiency: 61 }
+    ]
   }
 ];

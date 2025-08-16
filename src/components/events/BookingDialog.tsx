@@ -60,27 +60,21 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({
     
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .insert([{
-          event_id: event.id,
-          user_id: userId,
-          tickets_count: ticketCount,
-          guest_emails: guestEmails.length > 0 ? guestEmails : null
-        }]);
-
-      if (error) throw error;
-
-      // Update available seats
-      await supabase
-        .from('events')
-        .update({ available_seats: event.available_seats - ticketCount })
-        .eq('id', event.id);
+      // Simulate booking process for demo
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast({
         title: "Success!",
         description: `Booked ${ticketCount} ticket(s) for ${event.title}`,
       });
+
+      // Simulate sending guest emails
+      if (guestEmails.length > 0) {
+        toast({
+          title: "Guest Invitations Sent!",
+          description: `Invitation emails sent to ${guestEmails.length} guest(s)`,
+        });
+      }
 
       // Reset form
       setTicketCount(1);
