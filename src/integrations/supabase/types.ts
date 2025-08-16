@@ -14,7 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          booking_status: string | null
+          created_at: string
+          event_id: string
+          guest_emails: string[] | null
+          id: string
+          ticket_count: number
+          total_amount: number | null
+          user_id: string
+        }
+        Insert: {
+          booking_status?: string | null
+          created_at?: string
+          event_id: string
+          guest_emails?: string[] | null
+          id?: string
+          ticket_count?: number
+          total_amount?: number | null
+          user_id: string
+        }
+        Update: {
+          booking_status?: string | null
+          created_at?: string
+          event_id?: string
+          guest_emails?: string[] | null
+          id?: string
+          ticket_count?: number
+          total_amount?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          available_seats: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_date: string
+          id: string
+          image_url: string | null
+          location: string | null
+          price: number | null
+          title: string
+        }
+        Insert: {
+          available_seats?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          price?: number | null
+          title: string
+        }
+        Update: {
+          available_seats?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date?: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          price?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          created_at: string
+          habit_date: string
+          habit_name: string
+          id: string
+          points: number | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          habit_date: string
+          habit_name: string
+          id?: string
+          points?: number | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          habit_date?: string
+          habit_name?: string
+          id?: string
+          points?: number | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          role: string | null
+          team_id: string | null
+          total_points: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          role?: string | null
+          team_id?: string | null
+          total_points?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          role?: string | null
+          team_id?: string | null
+          total_points?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          member_count: number | null
+          name: string
+          total_points: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          member_count?: number | null
+          name: string
+          total_points?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          member_count?: number | null
+          name?: string
+          total_points?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
