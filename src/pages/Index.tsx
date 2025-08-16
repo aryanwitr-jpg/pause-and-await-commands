@@ -12,8 +12,9 @@ const Index = () => {
       <section className="relative py-20 px-4 bg-gradient-to-br from-background to-muted/20">
         <div className="container mx-auto text-center">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Welcome to TeamUp Event Spark
+            ImpactBoard
           </h1>
+          <p className="text-sm text-muted-foreground mb-4">(by Givetastic)</p>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join events, track habits, compete with teams, and achieve your goals together.
             Build stronger connections through shared experiences.
