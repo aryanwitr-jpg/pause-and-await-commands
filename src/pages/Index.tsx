@@ -9,7 +9,7 @@ const Index = () => {
   return (
     <main className="min-h-[calc(100vh-4rem)]">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-cover bg-center bg-no-repeat" style={{backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('/lovable-uploads/df77be1d-35f3-40f0-a372-d8e20a60e87d.png')"}}>
+      <section className="relative py-32 px-4 min-h-[80vh] flex items-center bg-cover bg-center bg-no-repeat" style={{backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('/lovable-uploads/df77be1d-35f3-40f0-a372-d8e20a60e87d.png')"}}>
         <div className="absolute inset-0 bg-background/10"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl font-bold mb-6 text-white drop-shadow-lg">
