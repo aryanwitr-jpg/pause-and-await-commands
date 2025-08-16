@@ -7,7 +7,7 @@ export const dummyCoaches = [
     email: 'sarah.green@ecosolutions.com',
     bio: 'Environmental scientist with 15+ years in sustainable development',
     specialties: ['Climate Action', 'Renewable Energy', 'Carbon Footprint'],
-    image_url: '/api/placeholder/150/150'
+    image_url: '/src/assets/coach-sarah-green.jpg'
   },
   {
     id: 'coach-2', 
@@ -15,7 +15,7 @@ export const dummyCoaches = [
     email: 'marcus.silva@greentech.org',
     bio: 'Sustainable technology innovator and green business consultant',
     specialties: ['Green Technology', 'Sustainable Business', 'Eco Innovation'],
-    image_url: '/api/placeholder/150/150'
+    image_url: '/src/assets/coach-marcus-silva.jpg'
   },
   {
     id: 'coach-3',
@@ -23,7 +23,7 @@ export const dummyCoaches = [
     email: 'elena.rodriguez@conservationleague.net',
     bio: 'Wildlife conservation expert and ecosystem restoration specialist',
     specialties: ['Conservation', 'Biodiversity', 'Ecosystem Restoration'],
-    image_url: '/api/placeholder/150/150'
+    image_url: '/src/assets/coach-elena-rodriguez.jpg'
   },
   {
     id: 'coach-4',
@@ -31,7 +31,7 @@ export const dummyCoaches = [
     email: 'david.thompson@sustainablecities.gov',
     bio: 'Urban planning specialist focused on sustainable city development',
     specialties: ['Urban Planning', 'Smart Cities', 'Sustainable Transport'],
-    image_url: '/api/placeholder/150/150'
+    image_url: '/src/assets/coach-david-thompson.jpg'
   },
   {
     id: 'coach-5',
@@ -39,7 +39,7 @@ export const dummyCoaches = [
     email: 'aria.patel@oceansafe.org',
     bio: 'Marine biologist dedicated to ocean conservation and plastic waste reduction',
     specialties: ['Ocean Conservation', 'Waste Reduction', 'Marine Ecosystems'],
-    image_url: '/api/placeholder/150/150'
+    image_url: '/src/assets/coach-aria-patel.jpg'
   }
 ];
 

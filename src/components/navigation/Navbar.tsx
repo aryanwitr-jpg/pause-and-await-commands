@@ -107,6 +107,13 @@ export const Navbar: React.FC = () => {
         )}
 
         <Link
+          to="/coaches"
+          className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+        >
+          Coaches
+        </Link>
+        
+        <Link
           to="/leaderboard"
           className="text-sm font-medium text-foreground hover:text-primary transition-colors"
         >

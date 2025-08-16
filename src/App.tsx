@@ -17,6 +17,7 @@ import Bookings from "./pages/Bookings";
 import CoachDashboard from "./pages/CoachDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import HabitTracking from "./pages/HabitTracking";
+import Coaches from "./pages/Coaches";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => (
                   <Bookings />
                 </ProtectedRoute>
               } />
+              <Route path="/coaches" element={<Coaches />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

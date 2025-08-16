@@ -4,10 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Users, Trophy, Calendar, Target, TrendingUp, Leaf, Award } from 'lucide-react';
+import { Users, Trophy, Calendar, Target, TrendingUp, Leaf, Award, BarChart3 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { dummyTeams } from '@/data/dummyData';
 
 interface DashboardStats {
   totalHabits: number;
@@ -16,6 +17,18 @@ interface DashboardStats {
   totalProgress: number;
   eventsAttended: number;
   teamRank: number;
+}
+
+interface ProgressData {
+  date: string;
+  habits: number;
+  points: number;
+}
+
+interface LeaderboardEntry {
+  name: string;
+  points: number;
+  rank: number;
 }
 
 const Dashboard = () => {
@@ -30,10 +43,14 @@ const Dashboard = () => {
     teamRank: 0
   });
   const [loading, setLoading] = useState(true);
+  const [progressData, setProgressData] = useState<ProgressData[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
     if (user) {
       fetchDashboardStats();
+      generateProgressData();
+      generateLeaderboardData();
     }
   }, [user]);
 
@@ -63,16 +80,55 @@ const Dashboard = () => {
       setStats({
         totalHabits,
         completedToday,
-        currentStreak: 0, // Calculate properly later
+        currentStreak: 5, // Mock streak data
         totalProgress: totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0,
         eventsAttended,
-        teamRank: 1 // Calculate from leaderboard later
+        teamRank: 2 // Mock team rank
       });
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateProgressData = () => {
+    // Generate 7 days of mock progress data
+    const data: ProgressData[] = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      data.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        habits: Math.floor(Math.random() * 8) + 2, // 2-10 habits
+        points: Math.floor(Math.random() * 100) + 50 // 50-150 points
+      });
+    }
+    
+    setProgressData(data);
+  };
+
+  const generateLeaderboardData = () => {
+    // Use team data to create individual leaderboard
+    const allMembers = dummyTeams.flatMap(team => 
+      team.members.map(member => ({
+        name: member.name,
+        points: member.points,
+        rank: 0
+      }))
+    );
+    
+    // Sort by points and assign ranks
+    allMembers.sort((a, b) => b.points - a.points);
+    allMembers.forEach((member, index) => {
+      member.rank = index + 1;
+    });
+    
+    // Take top 5 for display
+    setLeaderboard(allMembers.slice(0, 5));
   };
 
   // Sample recent activities for demo
@@ -230,54 +286,81 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Environmental Impact */}
+        {/* Progress Over Time */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <Leaf className="w-5 h-5 text-primary" />
-              <span>Your Environmental Impact</span>
+              <BarChart3 className="w-5 h-5 text-primary" />
+              <span>7-Day Progress</span>
             </CardTitle>
             <CardDescription>
-              Positive changes you've made this month
+              Your daily habits and points over the past week
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                <div>
-                  <p className="font-medium">Plastic Bottles Saved</p>
-                  <p className="text-sm text-muted-foreground">By using reusable bottles</p>
+              {progressData.map((day, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex-1">
+                    <p className="font-medium">{day.date}</p>
+                    <p className="text-sm text-muted-foreground">{day.habits} habits completed</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-primary">{day.points}</div>
+                      <div className="text-xs text-muted-foreground">points</div>
+                    </div>
+                    <div className="w-20">
+                      <Progress value={(day.points / 150) * 100} className="h-2" />
+                    </div>
+                  </div>
                 </div>
-                <div className="text-2xl font-bold text-green-600">42</div>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <div>
-                  <p className="font-medium">CO₂ Reduced</p>
-                  <p className="text-sm text-muted-foreground">Through sustainable transport</p>
-                </div>
-                <div className="text-2xl font-bold text-blue-600">15kg</div>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                <div>
-                  <p className="font-medium">Plant-Based Meals</p>
-                  <p className="text-sm text-muted-foreground">Eco-friendly food choices</p>
-                </div>
-                <div className="text-2xl font-bold text-orange-600">28</div>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                <div>
-                  <p className="font-medium">Events Attended</p>
-                  <p className="text-sm text-muted-foreground">Community sustainability events</p>
-                </div>
-                <div className="text-2xl font-bold text-purple-600">{stats.eventsAttended}</div>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Individual Leaderboard */}
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Trophy className="w-5 h-5 text-primary" />
+            <span>Top Performers</span>
+          </CardTitle>
+          <CardDescription>
+            See how you compare with other sustainability champions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {leaderboard.map((entry, index) => (
+              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                    entry.rank === 1 ? 'bg-yellow-100 text-yellow-800' :
+                    entry.rank === 2 ? 'bg-gray-100 text-gray-800' :
+                    entry.rank === 3 ? 'bg-orange-100 text-orange-800' :
+                    'bg-blue-100 text-blue-800'
+                  }`}>
+                    #{entry.rank}
+                  </div>
+                  <div>
+                    <p className="font-medium">{entry.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {entry.name === profile?.name ? 'You' : 'Team Member'}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold text-primary">{entry.points}</div>
+                  <div className="text-xs text-muted-foreground">points</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </main>
   );
 };
