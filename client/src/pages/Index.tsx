@@ -13,7 +13,7 @@ const Index = () => {
       <section className="relative py-20 px-4 bg-gradient-to-br from-background to-muted/20 overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
           style={{
             backgroundImage: `url(${forestImage})`,
           }}
