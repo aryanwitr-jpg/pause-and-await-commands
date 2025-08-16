@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Teams from "./pages/Teams";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
+import Bookings from "./pages/Bookings";
 import CoachDashboard from "./pages/CoachDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import HabitTracking from "./pages/HabitTracking";
@@ -66,6 +67,11 @@ const App = () => (
               <Route path="/habits" element={
                 <ProtectedRoute>
                   <HabitTracking />
+                </ProtectedRoute>
+              } />
+              <Route path="/bookings" element={
+                <ProtectedRoute>
+                  <Bookings />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

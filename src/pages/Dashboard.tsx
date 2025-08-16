@@ -22,14 +22,58 @@ const Dashboard = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const [stats, setStats] = useState<DashboardStats>({
-    totalHabits: 12,
-    completedToday: 8,
-    currentStreak: 5,
-    totalProgress: 67,
-    eventsAttended: 3,
-    teamRank: 2
+    totalHabits: 0,
+    completedToday: 0,
+    currentStreak: 0,
+    totalProgress: 0,
+    eventsAttended: 0,
+    teamRank: 0
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchDashboardStats();
+    }
+  }, [user]);
+
+  const fetchDashboardStats = async () => {
+    try {
+      if (!user) return;
+
+      // Fetch user's habits
+      const { data: habitsData } = await supabase
+        .from('habits')
+        .select('*')
+        .eq('user_id', user.id);
+
+      // Fetch user's bookings  
+      const { data: bookingsData } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_id', user.id);
+
+      const totalHabits = habitsData?.length || 0;
+      const completedToday = habitsData?.filter(h => 
+        h.status === 'completed' && 
+        new Date(h.habit_date).toDateString() === new Date().toDateString()
+      ).length || 0;
+      const eventsAttended = bookingsData?.length || 0;
+
+      setStats({
+        totalHabits,
+        completedToday,
+        currentStreak: 0, // Calculate properly later
+        totalProgress: totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0,
+        eventsAttended,
+        teamRank: 1 // Calculate from leaderboard later
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sample recent activities for demo
   const recentActivities = [
@@ -39,7 +83,7 @@ const Dashboard = () => {
     { id: 4, type: 'team', description: 'Joined team "Green Warriors"', points: 25, time: '3 days ago' },
   ];
 
-  const totalEcoPoints = 285;
+  const totalEcoPoints = profile?.total_points || 0;
   const weeklyGoal = 350;
   const weeklyProgress = Math.round((totalEcoPoints / weeklyGoal) * 100);
 

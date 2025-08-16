@@ -163,6 +163,10 @@ export const Navbar: React.FC = () => {
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Profile Settings</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/bookings')}>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span>My Bookings</span>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
