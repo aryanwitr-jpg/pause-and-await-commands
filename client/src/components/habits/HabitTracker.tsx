@@ -15,9 +15,10 @@ interface Habit {
   id: string;
   habit_name: string;
   habit_date: string;
-  status: 'pending' | 'completed' | 'missed';
-  points: number;
+  status: 'pending' | 'completed' | 'missed' | null;
+  points: number | null;
   user_id: string;
+  created_at?: string | null;
 }
 
 export const HabitTracker: React.FC = () => {
@@ -48,7 +49,11 @@ export const HabitTracker: React.FC = () => {
         .order('habit_date', { ascending: true });
 
       if (error) throw error;
-      setHabits(data || []);
+      setHabits((data || []).map(h => ({
+        ...h,
+        status: h.status || 'pending',
+        points: h.points || 10
+      })));
     } catch (error) {
       console.error('Error fetching habits:', error);
       toast({
@@ -139,7 +144,7 @@ export const HabitTracker: React.FC = () => {
   const getTotalPointsToday = () => {
     return getTodaysHabits()
       .filter(habit => habit.status === 'completed')
-      .reduce((sum, habit) => sum + habit.points, 0);
+      .reduce((sum, habit) => sum + (habit.points || 0), 0);
   };
 
   if (loading) {
@@ -268,7 +273,7 @@ export const HabitTracker: React.FC = () => {
                            habit.status === 'missed' ? '❌ Missed' : '⏳ Pending'}
                         </Badge>
                         <span className="text-sm text-muted-foreground font-medium">
-                          🌱 {habit.points} eco-points
+                          🌱 {habit.points || 0} eco-points
                         </span>
                       </div>
                     </div>
