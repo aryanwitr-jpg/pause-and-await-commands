@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Calendar, Users, Trophy, ArrowRight } from 'lucide-react';
-import forestImage from '@assets/pexels-nejc-kosir-108379-338936_1755315721658.jpg';
+import forestImage from '@/assets/green-building.jpg';
 
 const Index = () => {
   const { user, profile } = useAuth();
