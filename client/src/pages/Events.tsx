@@ -88,8 +88,8 @@ const Events = () => {
       
       // Extract unique coaches, categories, and locations for filters
       const uniqueCoaches = dummyCoaches.map(coach => ({ id: coach.id, name: coach.name }));
-      const uniqueCategories = [...new Set(eventsData.map(e => e.category).filter(Boolean))];
-      const uniqueLocations = [...new Set(eventsData.map(e => e.location).filter(Boolean))];
+      const uniqueCategories = Array.from(new Set(eventsData.map(e => e.category).filter(Boolean)));
+      const uniqueLocations = Array.from(new Set(eventsData.map(e => e.location).filter(Boolean)));
       
       setCoaches(uniqueCoaches);
       setCategories(uniqueCategories);

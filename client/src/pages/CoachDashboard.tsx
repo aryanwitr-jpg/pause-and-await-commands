@@ -16,14 +16,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface Event {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   event_date: string;
-  location: string;
+  location: string | null;
   total_seats: number;
   available_seats: number;
-  category?: string;
-  image_url?: string;
-  status: string;
+  category?: string | null;
+  image_url?: string | null;
+  status: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  coach_id: string;
   bookings?: Array<{ user_id: string; tickets_count: number }>;
 }
 

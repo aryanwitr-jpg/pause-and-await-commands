@@ -14,21 +14,23 @@ import { useToast } from '@/hooks/use-toast';
 interface User {
   id: string;
   name: string;
-  role: 'admin' | 'coach' | 'user';
-  team_id?: string;
-  created_at: string;
+  role: 'admin' | 'coach' | 'user' | null;
+  team_id?: string | null;
+  created_at: string | null;
+  updated_at?: string | null;
   team?: {
     name: string;
-  };
+  } | null;
 }
 
 interface Team {
   id: string;
   name: string;
-  admin_id: string;
-  points: number;
+  admin_id: string | null;
+  points: number | null;
   member_count: number;
-  created_at: string;
+  created_at: string | null;
+  updated_at?: string | null;
 }
 
 const AdminDashboard = () => {
