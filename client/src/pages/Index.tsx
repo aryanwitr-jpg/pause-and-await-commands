@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Calendar, Users, Trophy, ArrowRight } from 'lucide-react';
+import forestImage from '@assets/pexels-nejc-kosir-108379-338936_1755315721658.jpg';
 
 const Index = () => {
   const { user, profile } = useAuth();
@@ -9,8 +10,18 @@ const Index = () => {
   return (
     <main className="min-h-[calc(100vh-4rem)]">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-background to-muted/20">
-        <div className="container mx-auto text-center">
+      <section className="relative py-20 px-4 bg-gradient-to-br from-background to-muted/20 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+          style={{
+            backgroundImage: `url(${forestImage})`,
+          }}
+        />
+        {/* Overlay for better text contrast */}
+        <div className="absolute inset-0 bg-background/60" />
+        
+        <div className="container mx-auto text-center relative z-10">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             ImpactBoard
           </h1>
