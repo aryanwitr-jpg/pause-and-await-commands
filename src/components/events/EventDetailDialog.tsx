@@ -76,8 +76,12 @@ export const EventDetailDialog: React.FC<EventDetailDialogProps> = ({
         
         <div className="space-y-6">
           {event.image_url && (
-            <div className="w-full h-48 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
-              <Leaf className="w-16 h-16 text-primary/40" />
+            <div className="w-full h-64 overflow-hidden rounded-lg">
+              <img 
+                src={event.image_url} 
+                alt={event.title}
+                className="w-full h-full object-cover"
+              />
             </div>
           )}
 

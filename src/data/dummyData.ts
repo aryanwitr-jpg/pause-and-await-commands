@@ -54,7 +54,7 @@ export const dummyEvents = [
     available_seats: 23,
     coach_id: 'coach-1',
     category: 'Renewable Energy',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/solar-garden.jpg',
     status: 'active'
   },
   {
@@ -67,7 +67,7 @@ export const dummyEvents = [
     available_seats: 8,
     coach_id: 'coach-2',
     category: 'Waste Reduction',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/zero-waste.jpg',
     status: 'active'
   },
   {
@@ -80,7 +80,7 @@ export const dummyEvents = [
     available_seats: 12,
     coach_id: 'coach-3',
     category: 'Biodiversity',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/urban-beekeeping.jpg',
     status: 'active'
   },
   {
@@ -93,7 +93,7 @@ export const dummyEvents = [
     available_seats: 156,
     coach_id: 'coach-4',
     category: 'Sustainable Transport',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/sustainable-transport.jpg',
     status: 'active'
   },
   {
@@ -106,7 +106,7 @@ export const dummyEvents = [
     available_seats: 31,
     coach_id: 'coach-5',
     category: 'Ocean Conservation',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/ocean-cleanup.jpg',
     status: 'active'
   },
   {
@@ -119,7 +119,7 @@ export const dummyEvents = [
     available_seats: 15,
     coach_id: 'coach-4',
     category: 'Green Technology',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/green-building.jpg',
     status: 'active'
   },
   {
@@ -132,7 +132,7 @@ export const dummyEvents = [
     available_seats: 22,
     coach_id: 'coach-1',
     category: 'Sustainable Agriculture',
-    image_url: '/api/placeholder/400/250',
+    image_url: '/src/assets/permaculture-garden.jpg',
     status: 'active'
   }
 ];
