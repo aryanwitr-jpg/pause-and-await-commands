@@ -22,24 +22,109 @@ const Dashboard = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const [stats, setStats] = useState<DashboardStats>({
-    totalHabits: 12,
-    completedToday: 8,
-    currentStreak: 5,
-    totalProgress: 67,
-    eventsAttended: 3,
-    teamRank: 2
+    totalHabits: 0,
+    completedToday: 0,
+    currentStreak: 0,
+    totalProgress: 0,
+    eventsAttended: 0,
+    teamRank: 0
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [recentActivities, setRecentActivities] = useState<any[]>([]);
 
-  // Sample recent activities for demo
-  const recentActivities = [
-    { id: 1, type: 'habit', description: 'Completed "Use reusable water bottle"', points: 10, time: '2 hours ago' },
-    { id: 2, type: 'event', description: 'Attended "Community Solar Garden Workshop"', points: 50, time: '1 day ago' },
-    { id: 3, type: 'habit', description: 'Completed "Take public transport"', points: 15, time: '1 day ago' },
-    { id: 4, type: 'team', description: 'Joined team "Green Warriors"', points: 25, time: '3 days ago' },
-  ];
+  useEffect(() => {
+    if (user) {
+      fetchUserStats();
+    }
+  }, [user]);
 
-  const totalEcoPoints = 285;
+  const fetchUserStats = async () => {
+    if (!user) return;
+    
+    try {
+      // Fetch habits data
+      const { data: habitsData, error: habitsError } = await supabase
+        .from('habits')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (habitsError) throw habitsError;
+
+      // Fetch bookings data
+      const { data: bookingsData, error: bookingsError } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (bookingsError) throw bookingsError;
+
+      // Calculate stats
+      const totalHabits = habitsData?.length || 0;
+      const today = new Date().toISOString().split('T')[0];
+      const completedToday = habitsData?.filter(h => 
+        h.habit_date === today && h.status === 'completed'
+      ).length || 0;
+      
+      // Calculate streak
+      let currentStreak = 0;
+      const sortedHabits = habitsData?.sort((a, b) => 
+        new Date(b.habit_date).getTime() - new Date(a.habit_date).getTime()
+      ) || [];
+      
+      let checkDate = new Date();
+      for (const habit of sortedHabits) {
+        const habitDate = new Date(habit.habit_date);
+        if (habitDate.toDateString() === checkDate.toDateString() && habit.status === 'completed') {
+          currentStreak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+
+      const eventsAttended = bookingsData?.length || 0;
+      const totalPoints = habitsData?.reduce((sum, habit) => 
+        sum + (habit.status === 'completed' ? habit.points || 0 : 0), 0
+      ) || 0;
+
+      setStats({
+        totalHabits,
+        completedToday,
+        currentStreak,
+        totalProgress: totalPoints,
+        eventsAttended,
+        teamRank: 0 // Will be calculated based on team data
+      });
+
+      // Set recent activities from real data
+      const activities = [
+        ...(habitsData?.filter(h => h.status === 'completed').slice(0, 3).map(h => ({
+          id: h.id,
+          type: 'habit',
+          description: `Completed "${h.habit_name}"`,
+          points: h.points || 0,
+          time: new Date(h.habit_date).toLocaleDateString()
+        })) || []),
+        ...(bookingsData?.slice(0, 2).map(b => ({
+          id: b.id,
+          type: 'event',
+          description: 'Event booking confirmed',
+          points: 50,
+          time: b.created_at ? new Date(b.created_at).toLocaleDateString() : 'Recently'
+        })) || [])
+      ];
+
+      setRecentActivities(activities.slice(0, 4));
+
+    } catch (error) {
+      console.error('Error fetching user stats:', error);
+      // Keep default zero stats for new users
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalEcoPoints = stats.totalProgress;
   const weeklyGoal = 350;
   const weeklyProgress = Math.round((totalEcoPoints / weeklyGoal) * 100);
 
@@ -75,7 +160,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-bold text-primary">{totalEcoPoints}</div>
             <p className="text-xs text-muted-foreground">
-              +45 from yesterday
+              {totalEcoPoints === 0 ? 'Start tracking habits to earn points!' : `+${stats.completedToday * 10} from today`}
             </p>
           </CardContent>
         </Card>
@@ -88,7 +173,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{stats.completedToday}/{stats.totalHabits}</div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((stats.completedToday / stats.totalHabits) * 100)}% completion rate
+              {stats.totalHabits === 0 ? 'No habits tracked yet' : `${Math.round((stats.completedToday / Math.max(stats.totalHabits, 1)) * 100)}% completion rate`}
             </p>
           </CardContent>
         </Card>
@@ -101,7 +186,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-bold text-blue-600">{stats.currentStreak}</div>
             <p className="text-xs text-muted-foreground">
-              days in a row
+              {stats.currentStreak === 0 ? 'Start your streak today!' : 'days in a row'}
             </p>
           </CardContent>
         </Card>
@@ -112,9 +197,9 @@ const Dashboard = () => {
             <Trophy className="h-5 w-5 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600">#{stats.teamRank}</div>
+            <div className="text-3xl font-bold text-purple-600">{stats.teamRank === 0 ? '-' : `#${stats.teamRank}`}</div>
             <p className="text-xs text-muted-foreground">
-              in Green Warriors team
+              {stats.teamRank === 0 ? 'Join a team to compete!' : 'in your team'}
             </p>
           </CardContent>
         </Card>

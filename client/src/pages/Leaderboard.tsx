@@ -38,34 +38,58 @@ const Leaderboard = () => {
 
   const fetchLeaderboards = async () => {
     try {
-      // Fetch team leaderboard
-      const { data: teamsData, error: teamsError } = await supabase
-        .from('teams')
-        .select('*')
-        .order('points', { ascending: false });
+      // Use dummy team data from dummyData.ts for now
+      const dummyTeamsData = [
+        {
+          id: 'team-1',
+          name: 'Green Warriors',
+          total_points: 847,
+          member_count: 12,
+          efficiency: 78,
+        },
+        {
+          id: 'team-2',
+          name: 'Eco Champions',
+          total_points: 1184,
+          member_count: 18,
+          efficiency: 82,
+        },
+        {
+          id: 'team-3',
+          name: 'Planet Protectors',
+          total_points: 632,
+          member_count: 8,
+          efficiency: 71,
+        },
+        {
+          id: 'team-4',
+          name: 'Sustainability Squad',
+          total_points: 898,
+          member_count: 15,
+          efficiency: 75,
+        },
+        {
+          id: 'team-5',
+          name: 'Carbon Cutters',
+          total_points: 756,
+          member_count: 11,
+          efficiency: 80,
+        }
+      ];
 
-      if (teamsError) throw teamsError;
+      // Sort by points and create team leaderboard
+      const sortedTeams = dummyTeamsData
+        .sort((a, b) => b.total_points - a.total_points)
+        .map((team, index) => ({
+          id: team.id,
+          name: team.name,
+          points: team.total_points,
+          member_count: team.member_count,
+          rank: index + 1,
+          admin_name: 'Team Admin'
+        }));
 
-      // Get member counts and create team leaderboard
-      const teamsWithCounts = await Promise.all(
-        (teamsData || []).map(async (team, index) => {
-          const { count } = await supabase
-            .from('profiles')
-            .select('*', { count: 'exact', head: true })
-            .eq('team_id', team.id);
-          
-          return {
-            id: team.id,
-            name: team.name,
-            points: team.points || 0,
-            member_count: count || 0,
-            rank: index + 1,
-            admin_name: 'Admin'
-          };
-        })
-      );
-
-      setTeamLeaderboard(teamsWithCounts);
+      setTeamLeaderboard(sortedTeams);
 
       // Fetch user leaderboard based on habits completed
       const { data: usersData, error: usersError } = await supabase

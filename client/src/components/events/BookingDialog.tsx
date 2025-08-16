@@ -58,21 +58,66 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({
   const handleBooking = async () => {
     if (!event) return;
     
+    // Validate that we have enough guest emails for additional tickets
+    if (ticketCount > 1 && guestEmails.length !== ticketCount - 1) {
+      toast({
+        title: "Guest emails required",
+        description: `Please provide ${ticketCount - 1} guest email(s) for additional tickets`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     try {
-      // Simulate booking process for demo
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Store booking in Supabase
+      const { data: bookingData, error: bookingError } = await supabase
+        .from('bookings')
+        .insert([{
+          user_id: userId,
+          event_id: event.id,
+          tickets_count: ticketCount,
+          guest_emails: guestEmails,
+          status: 'confirmed'
+        }])
+        .select()
+        .single();
 
-      toast({
-        title: "Success!",
-        description: `Booked ${ticketCount} ticket(s) for ${event.title}`,
-      });
+      if (bookingError) throw bookingError;
 
-      // Simulate sending guest emails
-      if (guestEmails.length > 0) {
+      // Send email notifications (requires SendGrid API key)
+      try {
+        const emailData = {
+          event_title: event.title,
+          event_date: event.event_date,
+          tickets_count: ticketCount,
+          guest_emails: guestEmails
+        };
+
+        const response = await fetch('/api/send-booking-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        });
+
+        if (response.ok) {
+          toast({
+            title: "Success!",
+            description: `Booked ${ticketCount} ticket(s) for ${event.title}. Confirmation emails sent!`,
+          });
+        } else {
+          toast({
+            title: "Booking Confirmed",
+            description: `Booked ${ticketCount} ticket(s) for ${event.title}. Email service unavailable.`,
+          });
+        }
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError);
         toast({
-          title: "Guest Invitations Sent!",
-          description: `Invitation emails sent to ${guestEmails.length} guest(s)`,
+          title: "Booking Confirmed",
+          description: `Booked ${ticketCount} ticket(s) for ${event.title}. Email notifications failed.`,
         });
       }
 
