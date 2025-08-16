@@ -48,7 +48,7 @@ export const HabitTracker: React.FC = () => {
         .order('habit_date', { ascending: true });
 
       if (error) throw error;
-      setHabits(data || []);
+      setHabits((data || []) as Habit[]);
     } catch (error) {
       console.error('Error fetching habits:', error);
       toast({

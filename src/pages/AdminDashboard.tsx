@@ -25,10 +25,12 @@ interface User {
 interface Team {
   id: string;
   name: string;
-  admin_id: string;
-  points: number;
+  admin_id?: string;
+  points?: number;
+  total_points: number;
   member_count: number;
   created_at: string;
+  description?: string;
 }
 
 const AdminDashboard = () => {
@@ -58,7 +60,7 @@ const AdminDashboard = () => {
         .order('created_at', { ascending: false });
 
       if (usersError) throw usersError;
-      setUsers(usersData || []);
+      setUsers((usersData || []) as User[]);
 
       // Fetch all teams with member counts
       const { data: teamsData, error: teamsError } = await supabase
@@ -80,7 +82,7 @@ const AdminDashboard = () => {
         })
       );
 
-      setTeams(teamsWithCounts);
+      setTeams(teamsWithCounts as Team[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({

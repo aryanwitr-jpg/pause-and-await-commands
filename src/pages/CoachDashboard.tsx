@@ -19,12 +19,15 @@ interface Event {
   description: string;
   event_date: string;
   location: string;
-  total_seats: number;
+  total_seats?: number;
   available_seats: number;
   category?: string;
   image_url?: string;
-  status: string;
-  bookings?: Array<{ user_id: string; tickets_count: number }>;
+  price?: number;
+  status?: string;
+  created_by?: string;
+  created_at?: string;
+  bookings?: Array<{ user_id: string; ticket_count: number }>;
 }
 
 const CoachDashboard = () => {
@@ -56,13 +59,13 @@ const CoachDashboard = () => {
         .from('events')
         .select(`
           *,
-          bookings(user_id, tickets_count)
+          bookings(user_id, ticket_count)
         `)
-        .eq('coach_id', user.id)
+        .eq('created_by', user.id)
         .order('event_date', { ascending: true });
 
       if (error) throw error;
-      setEvents(data || []);
+      setEvents((data || []) as Event[]);
     } catch (error) {
       console.error('Error fetching events:', error);
       toast({
@@ -141,7 +144,7 @@ const CoachDashboard = () => {
   };
 
   const getBookedSeats = (event: Event) => {
-    return event.bookings?.reduce((total, booking) => total + booking.tickets_count, 0) || 0;
+    return event.bookings?.reduce((total, booking) => total + booking.ticket_count, 0) || 0;
   };
 
   if (loading) {

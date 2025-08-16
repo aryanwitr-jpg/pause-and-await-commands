@@ -32,6 +32,7 @@ interface Event {
   coach_id: string;
   category?: string;
   image_url?: string;
+  price: number;
   coach_profile?: {
     name: string;
   };
@@ -78,13 +79,14 @@ const Events = () => {
 
       const eventsData = dummyEvents.map(event => ({
         ...event,
+        price: 0, // Default price for dummy data
         image_url: imageMap[event.id] || solarGarden,
         coach_profile: { name: dummyCoaches.find(c => c.id === event.coach_id)?.name || 'Unknown' },
         bookings: [] // Empty for demo
       }));
       
-      setEvents(eventsData);
-      setFilteredEvents(eventsData);
+      setEvents(eventsData as Event[]);
+      setFilteredEvents(eventsData as Event[]);
       
       // Extract unique coaches, categories, and locations for filters
       const uniqueCoaches = dummyCoaches.map(coach => ({ id: coach.id, name: coach.name }));
@@ -301,7 +303,6 @@ const Events = () => {
         open={bookingDialogOpen}
         onOpenChange={setBookingDialogOpen}
         onBookingComplete={fetchEvents}
-        userId={user?.id || ''}
       />
 
       <EventDetailDialog
