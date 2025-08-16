@@ -119,7 +119,7 @@ export const Navbar: React.FC = () => {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">TE</span>
               </div>
-              <span className="font-bold text-xl text-foreground">TeamUp Event Spark</span>
+              <span className="font-bold text-xl text-foreground">ImpactBoard</span>
             </Link>
           </div>
 

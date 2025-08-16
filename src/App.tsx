@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Teams from "./pages/Teams";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
+import CoachDashboard from "./pages/CoachDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,11 @@ const App = () => (
               <Route path="/dashboard" element={
                 <ProtectedRoute requiredRole="user">
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/coach/dashboard" element={
+                <ProtectedRoute requiredRole="coach">
+                  <CoachDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/teams" element={

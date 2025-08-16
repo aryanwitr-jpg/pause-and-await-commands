@@ -66,6 +66,9 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Browse, book, and manage events. Coaches can create and organize events with available seats.
               </p>
+              <Button asChild className="mt-4 w-full" variant="outline">
+                <Link to="/events">Browse Events</Link>
+              </Button>
             </div>
             <div className="text-center p-6 rounded-lg border bg-card">
               <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
@@ -73,13 +76,25 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Join teams, track habits together, and build stronger relationships through shared goals.
               </p>
+              <Button asChild className="mt-4 w-full" variant="outline">
+                <Link to="/teams">View Teams</Link>
+              </Button>
             </div>
             <div className="text-center p-6 rounded-lg border bg-card">
               <Trophy className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-semibold mb-3">Progress Tracking</h3>
+              <h3 className="text-xl font-semibold mb-3">Habit Tracking</h3>
               <p className="text-muted-foreground">
-                Monitor your progress, compete on leaderboards, and celebrate achievements with your team.
+                Track daily habits, monitor progress, and celebrate achievements with your team.
               </p>
+              {user ? (
+                <Button asChild className="mt-4 w-full" variant="outline">
+                  <Link to="/dashboard">Track Habits</Link>
+                </Button>
+              ) : (
+                <Button asChild className="mt-4 w-full" variant="outline">
+                  <Link to="/auth">Sign in to Track</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
