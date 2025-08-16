@@ -60,7 +60,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 <SelectValue placeholder="All categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All categories</SelectItem>
+                <SelectItem value="all">All categories</SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}
@@ -77,7 +77,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 <SelectValue placeholder="All coaches" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All coaches</SelectItem>
+                <SelectItem value="all">All coaches</SelectItem>
                 {coaches.map((coach) => (
                   <SelectItem key={coach.id} value={coach.id}>
                     {coach.name}
@@ -94,7 +94,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 <SelectValue placeholder="All locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All locations</SelectItem>
+                <SelectItem value="all">All locations</SelectItem>
                 {locations.map((location) => (
                   <SelectItem key={location} value={location}>
                     {location}

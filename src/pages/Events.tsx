@@ -40,9 +40,9 @@ const Events = () => {
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
-    category: '',
-    coach: '',
-    location: '',
+    category: 'all',
+    coach: 'all',
+    location: 'all',
     date: ''
   });
 
@@ -105,15 +105,15 @@ const Events = () => {
       );
     }
 
-    if (currentFilters.category) {
+    if (currentFilters.category && currentFilters.category !== 'all') {
       filtered = filtered.filter(event => event.category === currentFilters.category);
     }
 
-    if (currentFilters.coach) {
+    if (currentFilters.coach && currentFilters.coach !== 'all') {
       filtered = filtered.filter(event => event.coach_id === currentFilters.coach);
     }
 
-    if (currentFilters.location) {
+    if (currentFilters.location && currentFilters.location !== 'all') {
       filtered = filtered.filter(event => event.location === currentFilters.location);
     }
 
@@ -129,9 +129,9 @@ const Events = () => {
   const clearFilters = () => {
     const emptyFilters = {
       search: '',
-      category: '',
-      coach: '',
-      location: '',
+      category: 'all',
+      coach: 'all',
+      location: 'all',
       date: ''
     };
     setFilters(emptyFilters);
