@@ -12,10 +12,10 @@ const Index = () => {
       <section className="relative py-20 px-4 bg-cover bg-center bg-no-repeat" style={{backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/lovable-uploads/df77be1d-35f3-40f0-a372-d8e20a60e87d.png')"}}>
         <div className="absolute inset-0 bg-background/20"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-5xl font-bold mb-6 text-white drop-shadow-lg">
+          <h1 className="text-6xl font-bold mb-6 text-white drop-shadow-lg">
             ImpactBoard
           </h1>
-          <p className="text-sm text-white/80 mb-4 drop-shadow">(by Givetastic)</p>
+          <p className="text-lg text-white/80 mb-4 drop-shadow">(by Givetastic)</p>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">
             Join events, track habits, compete with teams, and achieve your goals together.
             Build stronger connections through shared experiences.
