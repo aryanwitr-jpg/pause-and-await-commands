@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Calendar, Users, Trophy, Settings, LogOut } from 'lucide-react';
+import { Calendar, Users, Trophy, Settings, LogOut, Target } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, profile, signOut } = useAuth();
@@ -54,6 +54,13 @@ export const Navbar: React.FC = () => {
             >
               <Users className="w-4 h-4 inline mr-2" />
               Teams
+            </Link>
+            <Link
+              to="/habits"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              <Target className="w-4 h-4 inline mr-2" />
+              Habits
             </Link>
             <Link
               to="/dashboard"
