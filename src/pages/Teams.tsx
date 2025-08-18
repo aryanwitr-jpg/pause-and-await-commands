@@ -88,7 +88,7 @@ const Teams = () => {
       await supabase
         .from('profiles')
         .update({ team_id: data.id })
-        .eq('id', user.id);
+        .eq('user_id', user.id);
 
       toast({
         title: "Success",

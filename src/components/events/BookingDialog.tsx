@@ -40,6 +40,9 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({
   const { toast } = useToast();
   const { user } = useAuth();
 
+  const isUuid = (val: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
+
   const handleAddEmail = () => {
     if (currentEmail && currentEmail.includes('@') && !guestEmails.includes(currentEmail)) {
       if (guestEmails.length < ticketCount - 1) {
@@ -82,6 +85,21 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({
     
     setLoading(true);
     try {
+      // If using demo events (non-UUID ids), simulate a successful booking
+      if (!isUuid(event.id)) {
+        toast({
+          title: "Success!",
+          description: `Booked ${ticketCount} ticket(s) for ${event.title}.`,
+        });
+
+        setTicketCount(1);
+        setGuestEmails([]);
+        setCurrentEmail('');
+        onOpenChange(false);
+        if (onBookingComplete) onBookingComplete();
+        return;
+      }
+
       // Create booking
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')

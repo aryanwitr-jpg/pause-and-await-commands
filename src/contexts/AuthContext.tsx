@@ -37,10 +37,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
-        .single();
+        .eq('user_id', userId)
+        .maybeSingle();
       
       if (error) throw error;
+
+      if (!data) {
+        // Create a default profile if it doesn't exist yet
+        const { data: userRes } = await supabase.auth.getUser();
+        const displayName = userRes?.user?.user_metadata?.name || userRes?.user?.email?.split('@')[0] || 'User';
+        const { data: inserted, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: userId,
+            name: displayName,
+            email: userRes?.user?.email || null,
+          })
+          .select('*')
+          .single();
+        
+        if (insertError) throw insertError;
+        setProfile(inserted);
+        return;
+      }
+
       setProfile(data);
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -121,7 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { error } = await supabase
       .from('profiles')
       .update(updates)
-      .eq('id', user.id);
+      .eq('user_id', user.id);
     
     if (!error && profile) {
       setProfile({ ...profile, ...updates });

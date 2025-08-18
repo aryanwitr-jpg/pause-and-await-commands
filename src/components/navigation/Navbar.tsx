@@ -33,6 +33,7 @@ export const Navbar: React.FC = () => {
 
   const renderNavLinks = () => {
     const role = profile?.role;
+    const dashboardPath = role === 'coach' ? '/coach/dashboard' : role === 'admin' ? '/admin/dashboard' : '/dashboard';
 
     return (
       <div className="flex items-center space-x-6">
@@ -43,6 +44,15 @@ export const Navbar: React.FC = () => {
           <Calendar className="w-4 h-4 inline mr-2" />
           Events
         </Link>
+
+        {user && (
+          <Link
+            to={dashboardPath}
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+          >
+            Dashboard
+          </Link>
+        )}
 
         {role === 'user' && (
           <>
@@ -59,12 +69,6 @@ export const Navbar: React.FC = () => {
             >
               <Target className="w-4 h-4 inline mr-2" />
               Habits
-            </Link>
-            <Link
-              to="/dashboard"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Dashboard
             </Link>
           </>
         )}

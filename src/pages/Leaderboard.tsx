@@ -42,7 +42,7 @@ const Leaderboard = () => {
       const { data: teamsData, error: teamsError } = await supabase
         .from('teams')
         .select('*')
-        .order('points', { ascending: false });
+        .order('total_points', { ascending: false });
 
       if (teamsError) throw teamsError;
 
