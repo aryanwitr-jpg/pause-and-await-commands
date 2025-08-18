@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Medal, Award, Users, Target } from 'lucide-react';
+import { Trophy, Medal, Award, Users, Target, Calendar, Mail, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,14 @@ interface TeamLeaderboard {
   member_count: number;
   rank: number;
   admin_name?: string;
+  description?: string;
+  efficiency?: number;
+  created_at?: string;
+  members?: Array<{
+    name: string;
+    points: number;
+    efficiency: number;
+  }>;
 }
 
 interface UserLeaderboard {
@@ -38,34 +46,26 @@ const Leaderboard = () => {
 
   const fetchLeaderboards = async () => {
     try {
-      // Fetch team leaderboard
-      const { data: teamsData, error: teamsError } = await supabase
-        .from('teams')
-        .select('*')
-        .order('total_points', { ascending: false });
+      // Use dummy data for teams leaderboard from dummyData
+      const { dummyTeams } = await import('@/data/dummyData');
+      
+      // Sort teams by total points and assign ranks
+      const sortedTeams = [...dummyTeams]
+        .sort((a, b) => (b.total_points || 0) - (a.total_points || 0))
+        .map((team, index) => ({
+          id: team.id,
+          name: team.name,
+          points: team.total_points || 0,
+          member_count: team.member_count || 0,
+          rank: index + 1,
+          admin_name: 'Admin',
+          description: team.description,
+          efficiency: team.efficiency || 75,
+          created_at: team.created_at,
+          members: team.members
+        }));
 
-      if (teamsError) throw teamsError;
-
-      // Get member counts and create team leaderboard
-      const teamsWithCounts = await Promise.all(
-        (teamsData || []).map(async (team, index) => {
-          const { count } = await supabase
-            .from('profiles')
-            .select('*', { count: 'exact', head: true })
-            .eq('team_id', team.id);
-          
-          return {
-            id: team.id,
-            name: team.name,
-            points: team.total_points || 0,
-            member_count: count || 0,
-            rank: index + 1,
-            admin_name: 'Admin'
-          };
-        })
-      );
-
-      setTeamLeaderboard(teamsWithCounts);
+      setTeamLeaderboard(sortedTeams);
 
       // Fetch user leaderboard based on habits completed
       const { data: usersData, error: usersError } = await supabase
@@ -213,36 +213,108 @@ const Leaderboard = () => {
                 <p className="text-muted-foreground">No teams found</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {teamLeaderboard.map((team) => (
-                  <div
-                    key={team.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border ${
-                      team.rank <= 3 ? 'bg-muted/50' : 'bg-background'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-8 h-8">
-                        {getRankIcon(team.rank)}
+              <>
+                {/* Top 5 Ranking Overview */}
+                <div className="space-y-4 mb-8">
+                  <h3 className="text-lg font-semibold">Top 5 Teams</h3>
+                  {teamLeaderboard.slice(0, 5).map((team) => (
+                    <div
+                      key={team.id}
+                      className={`flex items-center justify-between p-4 rounded-lg border ${
+                        team.rank <= 3 ? 'bg-muted/50' : 'bg-background'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                          team.rank === 1 ? 'bg-yellow-500' : 
+                          team.rank === 2 ? 'bg-gray-400' : 
+                          team.rank === 3 ? 'bg-orange-600' : 'bg-primary'
+                        }`}>
+                          {team.rank}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{team.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {team.member_count} members • {team.efficiency}% efficiency
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">{team.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {team.member_count} member(s) • Admin: {team.admin_name}
+                      <div className="text-right">
+                        <Badge variant={getRankBadgeVariant(team.rank)} className="text-lg px-3 py-1">
+                          {team.points} points
+                        </Badge>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Rank #{team.rank}
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <Badge variant={getRankBadgeVariant(team.rank)} className="text-lg px-3 py-1">
-                        {team.points} points
-                      </Badge>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Rank #{team.rank}
-                      </p>
-                    </div>
+                  ))}
+                </div>
+
+                {/* Detailed Team Cards */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">All Teams</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {teamLeaderboard.map((team) => (
+                      <Card key={team.id} className="relative">
+                        <CardHeader>
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <CardTitle className="text-lg">{team.name}</CardTitle>
+                                {team.rank <= 3 && (
+                                  <Badge variant={team.rank === 1 ? "default" : "secondary"} className="text-xs">
+                                    #{team.rank}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {team.description}
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-end space-y-1">
+                              <Badge variant="secondary" className="flex items-center">
+                                <Trophy className="w-3 h-3 mr-1" />
+                                {team.points}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {team.efficiency}% eff.
+                              </Badge>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Users className="w-4 h-4 mr-2" />
+                              {team.member_count} members
+                            </div>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Calendar className="w-4 h-4 mr-2" />
+                              Created {new Date(team.created_at || '2024-01-01').toLocaleDateString()}
+                            </div>
+                            
+                            {team.members && team.members.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium mb-2">Top Contributors:</p>
+                                <div className="space-y-1">
+                                  {team.members.slice(0, 3).map((member, idx) => (
+                                    <div key={idx} className="flex justify-between text-xs">
+                                      <span className="text-muted-foreground">{member.name}</span>
+                                      <span className="font-medium">{member.points} pts</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>

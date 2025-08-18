@@ -229,115 +229,19 @@ const Teams = () => {
         </Card>
       )}
 
-      {/* Leaderboard */}
+      {/* View Full Rankings Link */}
       <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Trophy className="w-5 h-5 mr-2 text-primary" />
-            Team Rankings
-          </CardTitle>
-          <CardDescription>Teams ranked by sustainability points and efficiency</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {teams.slice(0, 5).map((team, index) => (
-              <div key={team.id} className="flex items-center justify-between p-4 rounded-lg border">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                    index === 0 ? 'bg-yellow-500' : 
-                    index === 1 ? 'bg-gray-400' : 
-                    index === 2 ? 'bg-orange-600' : 'bg-primary'
-                  }`}>
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{team.name}</h3>
-                    <p className="text-sm text-muted-foreground">{team.member_count} members</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="default">{team.total_points || team.points || 0} pts</Badge>
-                    <Badge variant="secondary">{team.efficiency || 75}%</Badge>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <CardContent className="text-center py-8">
+          <Trophy className="w-12 h-12 mx-auto mb-4 text-primary" />
+          <h3 className="text-lg font-semibold mb-2">View Full Team Rankings</h3>
+          <p className="text-muted-foreground mb-4">
+            See detailed team statistics, rankings, and top performers in the leaderboard.
+          </p>
+          <Button asChild>
+            <a href="/leaderboard">View Leaderboard</a>
+          </Button>
         </CardContent>
       </Card>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teams.map((team, index) => (
-          <Card key={team.id} className="relative">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <CardTitle className="text-lg">{team.name}</CardTitle>
-                    {index < 3 && (
-                      <Badge variant={index === 0 ? "default" : "secondary"} className="text-xs">
-                        #{index + 1}
-                      </Badge>
-                    )}
-                  </div>
-                  <CardDescription className="mt-1">
-                    {team.description}
-                  </CardDescription>
-                </div>
-                <div className="flex flex-col items-end space-y-1">
-                  <Badge variant="secondary" className="flex items-center">
-                    <Trophy className="w-3 h-3 mr-1" />
-                    {team.total_points || team.points || 0}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {team.efficiency || 75}% eff.
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Users className="w-4 h-4 mr-2" />
-                  {team.member_count} members
-                </div>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Created {new Date(team.created_at || '2024-01-01').toLocaleDateString()}
-                </div>
-                
-                {team.members && team.members.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium mb-2">Top Contributors:</p>
-                    <div className="space-y-1">
-                      {team.members.slice(0, 3).map((member, idx) => (
-                        <div key={idx} className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">{member.name}</span>
-                          <span className="font-medium">{member.points} pts</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {!userTeam && team.admin_id !== user?.id && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full mt-4"
-                    onClick={() => requestToJoinTeam(team.id, 'Team Admin')}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Request to Join
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
 
       {teams.length === 0 && (
         <div className="text-center py-12">
