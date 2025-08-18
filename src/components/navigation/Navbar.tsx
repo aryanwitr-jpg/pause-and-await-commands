@@ -32,9 +32,7 @@ export const Navbar: React.FC = () => {
   };
 
   const renderNavLinks = () => {
-    if (!profile) return null;
-
-    const { role } = profile;
+    const role = profile?.role;
 
     return (
       <div className="flex items-center space-x-6">
@@ -74,12 +72,6 @@ export const Navbar: React.FC = () => {
         {role === 'coach' && (
           <>
             <Link
-              to="/events"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Events
-            </Link>
-            <Link
               to="/coach/dashboard"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
@@ -90,13 +82,6 @@ export const Navbar: React.FC = () => {
 
         {role === 'admin' && (
           <>
-            <Link
-              to="/events"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              <Calendar className="w-4 h-4 inline mr-2" />
-              Events
-            </Link>
             <Link
               to="/admin/dashboard"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
